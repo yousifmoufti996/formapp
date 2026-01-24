@@ -50,9 +50,16 @@ public class TransactionRecordsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateTransactionRecordDto dto)
     {
-        var currentUserId = GetCurrentUserId();
-        var record = await _service.CreateAsync(dto, currentUserId);
-        return CreatedAtAction(nameof(GetById), new { id = record.Id }, record);
+        try
+        {
+            var currentUserId = GetCurrentUserId();
+            var record = await _service.CreateAsync(dto, currentUserId);
+            return CreatedAtAction(nameof(GetById), new { id = record.Id }, record);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     /// <summary>
@@ -61,8 +68,15 @@ public class TransactionRecordsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] CreateTransactionRecordDto dto)
     {
-        var record = await _service.UpdateAsync(id, dto);
-        return Ok(record);
+        try
+        {
+            var record = await _service.UpdateAsync(id, dto);
+            return Ok(record);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     /// <summary>
