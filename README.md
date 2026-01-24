@@ -39,8 +39,8 @@ A .NET Web API application for managing forms and transactions.
 
 1. Clone the repository
 ```bash
-git clone <your-repo-url>
-cd FormApp.API
+git clone https://github.com/yousifmoufti996/formapp.git
+cd formapp
 ```
 
 2. Update connection string in `appsettings.json`

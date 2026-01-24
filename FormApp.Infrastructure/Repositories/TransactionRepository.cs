@@ -31,6 +31,12 @@ public class TransactionRepository : ITransactionRepository
             .FirstOrDefaultAsync(t => t.Id == id);
     }
 
+    public async Task<Transaction?> GetBySubscriberIdAsync(Guid subscriberId)
+    {
+        return await _context.Transactions
+            .FirstOrDefaultAsync(t => t.SubscriberId == subscriberId);
+    }
+
     public async Task<IEnumerable<Transaction>> GetAllAsync()
     {
         return await _context.Transactions

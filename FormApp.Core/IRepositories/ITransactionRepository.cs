@@ -5,6 +5,7 @@ namespace FormApp.Core.IRepositories;
 public interface ITransactionRepository
 {
     Task<Transaction?> GetByIdAsync(Guid id);
+    Task<Transaction?> GetBySubscriberIdAsync(Guid subscriberId);
     Task<IEnumerable<Transaction>> GetAllAsync();
     Task<Transaction> AddAsync(Transaction transaction);
     Task<Transaction> UpdateAsync(Transaction transaction);

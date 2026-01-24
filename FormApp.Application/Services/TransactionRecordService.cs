@@ -77,6 +77,13 @@ public class TransactionRecordService : ITransactionRecordService
         
         if (existingSubscriber != null)
         {
+            // Check if subscriber already has a transaction
+            var existingTransaction = await _transactionRepository.GetBySubscriberIdAsync(existingSubscriber.Id);
+            if (existingTransaction != null)
+            {
+                throw new BadRequestException($"A transaction already exists for this subscriber (Account: {existingSubscriber.AccountNumber}, Subscription: {existingSubscriber.SubscriptionNumber}). Transaction ID: {existingTransaction.Id}");
+            }
+            
             // Update existing subscriber
             existingSubscriber.FacilityName = dto.FacilityName;
             existingSubscriber.SubscriptionNumber = dto.SubscriptionNumber;
