@@ -60,6 +60,11 @@ public class TransactionRecordsController : ControllerBase
         {
             return BadRequest(new { error = ex.Message });
         }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+        {
+            // Handle database-level errors like truncation, constraint violations, etc.
+            return BadRequest(new { error = "Database error: " + ex.InnerException?.Message ?? ex.Message });
+        }
     }
 
     /// <summary>
@@ -76,6 +81,11 @@ public class TransactionRecordsController : ControllerBase
         catch (InvalidOperationException ex)
         {
             return BadRequest(new { error = ex.Message });
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+        {
+            // Handle database-level errors like truncation, constraint violations, etc.
+            return BadRequest(new { error = "Database error: " + ex.InnerException?.Message ?? ex.Message });
         }
     }
 
