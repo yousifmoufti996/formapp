@@ -47,6 +47,28 @@ public class SubscriberRepository : ISubscriberRepository
 
     public async Task<Subscriber> UpdateAsync(Subscriber subscriber)
     {
+        // Check for duplicate AccountNumber (excluding current record)
+        if (!string.IsNullOrWhiteSpace(subscriber.AccountNumber))
+        {
+            var existingWithAccount = await _context.Subscribers
+                .FirstOrDefaultAsync(s => s.AccountNumber == subscriber.AccountNumber && s.Id != subscriber.Id);
+            if (existingWithAccount != null)
+            {
+                throw new InvalidOperationException($"AccountNumber '{subscriber.AccountNumber}' already exists.");
+            }
+        }
+
+        // Check for duplicate SubscriptionNumber (excluding current record)
+        if (!string.IsNullOrWhiteSpace(subscriber.SubscriptionNumber))
+        {
+            var existingWithSubscription = await _context.Subscribers
+                .FirstOrDefaultAsync(s => s.SubscriptionNumber == subscriber.SubscriptionNumber && s.Id != subscriber.Id);
+            if (existingWithSubscription != null)
+            {
+                throw new InvalidOperationException($"SubscriptionNumber '{subscriber.SubscriptionNumber}' already exists.");
+            }
+        }
+
         _context.Subscribers.Update(subscriber);
         await _context.SaveChangesAsync();
         return subscriber;
