@@ -200,6 +200,7 @@ public class TransactionRecordService : ITransactionRecordService
             ManufacturingCompany = dto.ManufacturingCompany,
             IsTransformerWorking = dto.IsTransformerWorking,
             HasBranches = dto.HasBranches,
+            BranchCount = dto.BranchCount,
             HasRoomButtons = dto.HasRoomButtons,
             IsRoomSuitable = dto.IsRoomSuitable,
             CanAddPartitions = dto.CanAddPartitions,
@@ -219,6 +220,16 @@ public class TransactionRecordService : ITransactionRecordService
                     Name = branchDto.Name,
                     Size = branchDto.Size,
                     Notes = branchDto.Notes,
+                    BranchMeasurementNumber = branchDto.BranchMeasurementNumber,
+                    BranchActualMeasurementNumber = branchDto.BranchActualMeasurementNumber,
+                    BranchMeasurementUnitActual = branchDto.BranchMeasurementUnitActual,
+                    BranchMeasurementUnitScan = branchDto.BranchMeasurementUnitScan,
+                    BranchReadingNumber = branchDto.BranchReadingNumber,
+                    BranchIsNotRealReadingNumber = branchDto.BranchIsNotRealReadingNumber,
+                    BranchMultiplicationFactor = branchDto.BranchMultiplicationFactor,
+                    BranchMeterStatus = branchDto.BranchMeterStatus,
+                    BranchManufacturingCompany = branchDto.BranchManufacturingCompany,
+                    BranchMeterNotes = branchDto.BranchMeterNotes,
                     TransformerId = createdTransformer.Id
                 };
                 await _transformerRepository.UpdateAsync(createdTransformer); // Ensure branches are added
@@ -330,6 +341,7 @@ public class TransactionRecordService : ITransactionRecordService
             transaction.Transformer.ManufacturingCompany = dto.ManufacturingCompany;
             transaction.Transformer.IsTransformerWorking = dto.IsTransformerWorking;
             transaction.Transformer.HasBranches = dto.HasBranches;
+            transaction.Transformer.BranchCount = dto.BranchCount;
             transaction.Transformer.HasRoomButtons = dto.HasRoomButtons;
             transaction.Transformer.IsRoomSuitable = dto.IsRoomSuitable;
             transaction.Transformer.CanAddPartitions = dto.CanAddPartitions;
@@ -348,6 +360,16 @@ public class TransactionRecordService : ITransactionRecordService
                         Name = branchDto.Name,
                         Size = branchDto.Size,
                         Notes = branchDto.Notes,
+                        BranchMeasurementNumber = branchDto.BranchMeasurementNumber,
+                        BranchActualMeasurementNumber = branchDto.BranchActualMeasurementNumber,
+                        BranchMeasurementUnitActual = branchDto.BranchMeasurementUnitActual,
+                        BranchMeasurementUnitScan = branchDto.BranchMeasurementUnitScan,
+                        BranchReadingNumber = branchDto.BranchReadingNumber,
+                        BranchIsNotRealReadingNumber = branchDto.BranchIsNotRealReadingNumber,
+                        BranchMultiplicationFactor = branchDto.BranchMultiplicationFactor,
+                        BranchMeterStatus = branchDto.BranchMeterStatus,
+                        BranchManufacturingCompany = branchDto.BranchManufacturingCompany,
+                        BranchMeterNotes = branchDto.BranchMeterNotes,
                         TransformerId = transaction.Transformer.Id
                     });
                 }
@@ -448,6 +470,7 @@ public class TransactionRecordService : ITransactionRecordService
             TransformerSerialNumber = transformer?.TransformerSerialNumber,
             ManufacturingCompany = transformer?.ManufacturingCompany,
             IsTransformerWorking = transformer?.IsTransformerWorking ?? false,
+            BranchCount = transformer?.BranchCount ?? 0,
             Latitude = subscriber?.Latitude,
             Longitude = subscriber?.Longitude,
             NearestPoint = subscriber?.NearestPoint,
@@ -467,7 +490,17 @@ public class TransactionRecordService : ITransactionRecordService
                 BranchCount = b.BranchCount,
                 Name = b.Name,
                 Size = b.Size,
-                Notes = b.Notes
+                Notes = b.Notes,
+                BranchMeasurementNumber = b.BranchMeasurementNumber,
+                BranchActualMeasurementNumber = b.BranchActualMeasurementNumber,
+                BranchMeasurementUnitActual = b.BranchMeasurementUnitActual,
+                BranchMeasurementUnitScan = b.BranchMeasurementUnitScan,
+                BranchReadingNumber = b.BranchReadingNumber,
+                BranchIsNotRealReadingNumber = b.BranchIsNotRealReadingNumber,
+                BranchMultiplicationFactor = b.BranchMultiplicationFactor,
+                BranchMeterStatus = b.BranchMeterStatus,
+                BranchManufacturingCompany = b.BranchManufacturingCompany,
+                BranchMeterNotes = b.BranchMeterNotes
             }).ToList(),
             HasRoomButtons = transformer?.HasRoomButtons ?? false,
             IsRoomSuitable = transformer?.IsRoomSuitable ?? false,

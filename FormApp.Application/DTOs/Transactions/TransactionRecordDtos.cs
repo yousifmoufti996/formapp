@@ -45,6 +45,7 @@ public class CreateTransactionRecordDto
     public string? TransformerSerialNumber { get; set; }
     public string? ManufacturingCompany { get; set; }
     public bool IsTransformerWorking { get; set; }
+    public int BranchCount { get; set; }
     
     // Geographic Information
     public decimal? Latitude { get; set; }
@@ -118,6 +119,7 @@ public class TransactionRecordResponseDto
     public string? TransformerSerialNumber { get; set; }
     public string? ManufacturingCompany { get; set; }
     public bool IsTransformerWorking { get; set; }
+    public int BranchCount { get; set; }
     
     // Geographic Information
     public decimal? Latitude { get; set; }
@@ -163,6 +165,18 @@ public class BranchDto
     public string? Name { get; set; }
     public string? Size { get; set; }
     public string? Notes { get; set; }
+    
+    // Branch Meter Information
+    public string? BranchMeasurementNumber { get; set; }
+    public string? BranchActualMeasurementNumber { get; set; }
+    public MeasurementUnitActual? BranchMeasurementUnitActual { get; set; }
+    public MeasurementUnitScan? BranchMeasurementUnitScan { get; set; }
+    public string? BranchReadingNumber { get; set; }
+    public bool BranchIsNotRealReadingNumber { get; set; }
+    public string? BranchMultiplicationFactor { get; set; }
+    public MeterStatus? BranchMeterStatus { get; set; }
+    public string? BranchManufacturingCompany { get; set; }
+    public string? BranchMeterNotes { get; set; }
 }
 
 public class BranchResponseDto
@@ -173,4 +187,16 @@ public class BranchResponseDto
     public string? Name { get; set; }
     public string? Size { get; set; }
     public string? Notes { get; set; }
+    
+    // Branch Meter Information
+    public string? BranchMeasurementNumber { get; set; }
+    public string? BranchActualMeasurementNumber { get; set; }
+    public MeasurementUnitActual? BranchMeasurementUnitActual { get; set; }
+    public MeasurementUnitScan? BranchMeasurementUnitScan { get; set; }
+    public string? BranchReadingNumber { get; set; }
+    public bool BranchIsNotRealReadingNumber { get; set; }
+    public string? BranchMultiplicationFactor { get; set; }
+    public MeterStatus? BranchMeterStatus { get; set; }
+    public string? BranchManufacturingCompany { get; set; }
+    public string? BranchMeterNotes { get; set; }
 }

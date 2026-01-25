@@ -10,6 +10,7 @@ public class Transformer
     public string? ManufacturingCompany { get; set; }  // شركة التصنيع
     public bool IsTransformerWorking { get; set; }  // هل المحول يعمل أم لا
     public bool HasBranches { get; set; }  // هل توجد فروع
+    public int BranchCount { get; set; }  // عدد الفروع
     
     // Room Information
     public bool HasRoomButtons { get; set; }  // هل تحتوي الغرفة على أزرار
