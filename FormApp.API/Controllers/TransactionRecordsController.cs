@@ -25,22 +25,24 @@ public class TransactionRecordsController : ControllerBase
     }
 
     /// <summary>
-    /// Get all facility records
+    /// Get all facility records created by the current user
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var records = await _service.GetAllAsync();
+        var currentUserId = GetCurrentUserId();
+        var records = await _service.GetAllAsync(currentUserId);
         return Ok(records);
     }
 
     /// <summary>
-    /// Get facility record by ID
+    /// Get facility record by ID (only if created by current user)
     /// </summary>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var record = await _service.GetByIdAsync(id);
+        var currentUserId = GetCurrentUserId();
+        var record = await _service.GetByIdAsync(id, currentUserId);
         return Ok(record);
     }
 

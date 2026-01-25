@@ -31,6 +31,23 @@ public class TransactionRepository : ITransactionRepository
             .FirstOrDefaultAsync(t => t.Id == id);
     }
 
+    public async Task<Transaction?> GetByIdAsync(Guid id, Guid userId)
+    {
+        return await _context.Transactions
+            .Include(t => t.Subscriber)
+            .Include(t => t.Subscription)
+            .Include(t => t.MeterScale)
+            .Include(t => t.Violation)
+            .Include(t => t.Transformer)
+                .ThenInclude(tr => tr.Branches)
+            .Include(t => t.Attachments)
+                .ThenInclude(a => a.File)
+            .Include(t => t.Attachments)
+                .ThenInclude(a => a.CreatedBy)
+            .Include(t => t.CreatedBy)
+            .FirstOrDefaultAsync(t => t.Id == id && t.CreatedById == userId);
+    }
+
     public async Task<Transaction?> GetBySubscriberIdAsync(Guid subscriberId)
     {
         return await _context.Transactions
@@ -51,6 +68,24 @@ public class TransactionRepository : ITransactionRepository
             .Include(t => t.Attachments)
                 .ThenInclude(a => a.CreatedBy)
             .Include(t => t.CreatedBy)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Transaction>> GetAllAsync(Guid userId)
+    {
+        return await _context.Transactions
+            .Include(t => t.Subscriber)
+            .Include(t => t.Subscription)
+            .Include(t => t.MeterScale)
+            .Include(t => t.Violation)
+            .Include(t => t.Transformer)
+                .ThenInclude(tr => tr.Branches)
+            .Include(t => t.Attachments)
+                .ThenInclude(a => a.File)
+            .Include(t => t.Attachments)
+                .ThenInclude(a => a.CreatedBy)
+            .Include(t => t.CreatedBy)
+            .Where(t => t.CreatedById == userId)
             .ToListAsync();
     }
 

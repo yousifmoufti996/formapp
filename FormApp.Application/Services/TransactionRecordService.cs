@@ -34,9 +34,9 @@ public class TransactionRecordService : ITransactionRecordService
         _fileService = fileService;
     }
 
-    public async Task<IEnumerable<TransactionRecordResponseDto>> GetAllAsync()
+    public async Task<IEnumerable<TransactionRecordResponseDto>> GetAllAsync(Guid userId)
     {
-        var transactions = await _transactionRepository.GetAllAsync();
+        var transactions = await _transactionRepository.GetAllAsync(userId);
         var responseDtos = new List<TransactionRecordResponseDto>();
         
         foreach (var transaction in transactions)
@@ -47,12 +47,12 @@ public class TransactionRecordService : ITransactionRecordService
         return responseDtos;
     }
 
-    public async Task<TransactionRecordResponseDto> GetByIdAsync(Guid id)
+    public async Task<TransactionRecordResponseDto> GetByIdAsync(Guid id, Guid userId)
     {
-        var transaction = await _transactionRepository.GetByIdAsync(id);
+        var transaction = await _transactionRepository.GetByIdAsync(id, userId);
         if (transaction == null)
         {
-            throw new NotFoundException($"Transaction with ID {id} not found.");
+            throw new NotFoundException($"Transaction with ID {id} not found or you don't have permission to access it.");
         }
 
         return MapTransactionToResponseDto(transaction, includeSingleAttachment: false);
@@ -225,7 +225,10 @@ public class TransactionRecordService : ITransactionRecordService
         };
 
         var createdTransaction = await _transactionRepository.AddAsync(transaction);
-        return await GetByIdAsync(createdTransaction.Id);
+        
+        // Fetch the complete transaction with all includes
+        var fullTransaction = await _transactionRepository.GetByIdAsync(createdTransaction.Id);
+        return MapTransactionToResponseDto(fullTransaction!, includeSingleAttachment: false);
     }
 
     public async Task<TransactionRecordResponseDto> UpdateAsync(Guid id, CreateTransactionRecordDto dto)
@@ -341,7 +344,9 @@ public class TransactionRecordService : ITransactionRecordService
         transaction.Notes = dto.Notes;
         await _transactionRepository.UpdateAsync(transaction);
 
-        return await GetByIdAsync(transaction.Id);
+        // Fetch the updated transaction with all includes
+        var updatedTransaction = await _transactionRepository.GetByIdAsync(transaction.Id);
+        return MapTransactionToResponseDto(updatedTransaction!, includeSingleAttachment: false);
     }
 
     public async Task DeleteAsync(Guid id)
