@@ -38,7 +38,7 @@ public class AuthService : IAuthService
         // Update user's last login
         user.LastLoginAt = DateTime.UtcNow;
         user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(30);
         await _userManager.UpdateAsync(user);
 
         return new LoginResponseDto
@@ -114,7 +114,7 @@ public class AuthService : IAuthService
 
         // Update user's refresh token
         user.RefreshToken = newRefreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(30);
         await _userManager.UpdateAsync(user);
 
         return new LoginResponseDto
