@@ -244,8 +244,9 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await FormApp.Infrastructure.Data.Seeders.DatabaseSeeder.SeedAsync(userManager, dbContext);
+    await FormApp.Infrastructure.Data.Seeders.DatabaseSeeder.SeedAsync(userManager, roleManager, dbContext);
 }
 
 // Log application start

@@ -6,13 +6,31 @@ namespace FormApp.Infrastructure.Data.Seeders;
 
 public static class DatabaseSeeder
 {
-    public static async Task SeedAsync(UserManager<User> userManager, ApplicationDbContext dbContext)
+    public static async Task SeedAsync(UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager, ApplicationDbContext dbContext)
     {
         // Ensure database is created
         await dbContext.Database.MigrateAsync();
 
+        // Seed roles
+        await SeedRoles(roleManager);
+
         // Seed super admin user
         await SeedSuperAdmin(userManager);
+    }
+
+    private static async Task SeedRoles(RoleManager<IdentityRole<Guid>> roleManager)
+    {
+        string[] roleNames = { "SuperAdmin", "User" };
+
+        foreach (var roleName in roleNames)
+        {
+            var roleExist = await roleManager.RoleExistsAsync(roleName);
+            if (!roleExist)
+            {
+                await roleManager.CreateAsync(new IdentityRole<Guid> { Name = roleName });
+                Console.WriteLine($"✓ Role '{roleName}' created successfully");
+            }
+        }
     }
 
     private static async Task SeedSuperAdmin(UserManager<User> userManager)
@@ -41,6 +59,9 @@ public static class DatabaseSeeder
             
             if (result.Succeeded)
             {
+                // Assign SuperAdmin role
+                await userManager.AddToRoleAsync(superAdmin, "SuperAdmin");
+                
                 Console.WriteLine($"✓ Super Admin created successfully");
                 Console.WriteLine($"  Username: {superAdminUsername}");
                 Console.WriteLine($"  Email: {superAdminEmail}");

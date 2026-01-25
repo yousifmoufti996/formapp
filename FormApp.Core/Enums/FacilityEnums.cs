@@ -61,7 +61,9 @@ public enum MeterStatus
     [Description("مغلق")]
     Closed = 2,
     [Description("مفقود")]
-    Lost = 3
+    Lost = 3,
+    [Description("معطل")]
+    Disabled = 4
 }
 
 public enum AddressStatus
@@ -77,7 +79,9 @@ public enum AnyAddress
     [Description("مغلق")]
     Closed = 1,
     [Description("مهجور")]
-    Abandoned = 2
+    Abandoned = 2,
+    [Description("نشط")]
+    Active = 3
 }
 
 public enum MeasurementUnitActual
@@ -85,14 +89,22 @@ public enum MeasurementUnitActual
     [Description("احادي الطور")]
     SinglePhase = 1,
     [Description("ثلاثي الطور")]
-    ThreePhase = 2
+    ThreePhase = 2,
+    [Description("CT")]
+    CT = 3,
+    [Description("CT/VT")]
+    CT_VT = 4
 }
 public enum MeasurementUnitScan
 {
     [Description("احادي الطور")]
     SinglePhase = 1,
     [Description("ثلاثي الطور")]
-    ThreePhase = 2
+    ThreePhase = 2,
+    [Description("CT")]
+    CT = 3,
+    [Description("CT/VT")]
+    CT_VT = 4
 }
 
 public enum BranchType

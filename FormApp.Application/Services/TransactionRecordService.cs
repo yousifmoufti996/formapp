@@ -34,9 +34,12 @@ public class TransactionRecordService : ITransactionRecordService
         _fileService = fileService;
     }
 
-    public async Task<IEnumerable<TransactionRecordResponseDto>> GetAllAsync(Guid userId)
+    public async Task<IEnumerable<TransactionRecordResponseDto>> GetAllAsync(Guid? userId = null)
     {
-        var transactions = await _transactionRepository.GetAllAsync(userId);
+        var transactions = userId.HasValue
+            ? await _transactionRepository.GetAllAsync(userId.Value)
+            : await _transactionRepository.GetAllAsync();
+            
         var responseDtos = new List<TransactionRecordResponseDto>();
         
         foreach (var transaction in transactions)
@@ -47,12 +50,18 @@ public class TransactionRecordService : ITransactionRecordService
         return responseDtos;
     }
 
-    public async Task<TransactionRecordResponseDto> GetByIdAsync(Guid id, Guid userId)
+    public async Task<TransactionRecordResponseDto> GetByIdAsync(Guid id, Guid? userId = null)
     {
-        var transaction = await _transactionRepository.GetByIdAsync(id, userId);
+        var transaction = userId.HasValue
+            ? await _transactionRepository.GetByIdAsync(id, userId.Value)
+            : await _transactionRepository.GetByIdAsync(id);
+            
         if (transaction == null)
         {
-            throw new NotFoundException($"Transaction with ID {id} not found or you don't have permission to access it.");
+            var message = userId.HasValue
+                ? $"Transaction with ID {id} not found or you don't have permission to access it."
+                : $"Transaction with ID {id} not found.";
+            throw new NotFoundException(message);
         }
 
         return MapTransactionToResponseDto(transaction, includeSingleAttachment: false);
@@ -106,6 +115,7 @@ public class TransactionRecordService : ITransactionRecordService
             existingSubscriber.CommercialAccountName = dto.CommercialAccountName;
             existingSubscriber.FieldPersonName = dto.FieldPersonName;
             existingSubscriber.FieldElectricCompanyCompanion = dto.FieldElectricCompanyCompanion;
+            existingSubscriber.SubscriberNotes = dto.SubscriberNotes;
             
             createdSubscriber = await _subscriberRepository.UpdateAsync(existingSubscriber);
         }
@@ -134,7 +144,8 @@ public class TransactionRecordService : ITransactionRecordService
                 ActualDetails = dto.ActualDetails,
                 CommercialAccountName = dto.CommercialAccountName,
                 FieldPersonName = dto.FieldPersonName,
-                FieldElectricCompanyCompanion = dto.FieldElectricCompanyCompanion
+                FieldElectricCompanyCompanion = dto.FieldElectricCompanyCompanion,
+                SubscriberNotes = dto.SubscriberNotes
             };
             createdSubscriber = await _subscriberRepository.AddAsync(subscriber);
         }
@@ -160,7 +171,8 @@ public class TransactionRecordService : ITransactionRecordService
             ReadingNumber = dto.ReadingNumber,
             IsNotRealReadingNumber = dto.IsNotRealReadingNumber,
             MultiplicationFactor = dto.MultiplicationFactor,
-            MeterStatus = dto.MeterStatus
+            MeterStatus = dto.MeterStatus,
+            MeterNotes = dto.MeterNotes
         };
         var createdMeterScale = await _meterScaleRepository.AddAsync(meterScale);
 
@@ -190,7 +202,8 @@ public class TransactionRecordService : ITransactionRecordService
             HasBranches = dto.HasBranches,
             HasRoomButtons = dto.HasRoomButtons,
             IsRoomSuitable = dto.IsRoomSuitable,
-            CanAddPartitions = dto.CanAddPartitions
+            CanAddPartitions = dto.CanAddPartitions,
+            TransformerNotes = dto.TransformerNotes
         };
         var createdTransformer = await _transformerRepository.AddAsync(transformer);
 
@@ -263,6 +276,7 @@ public class TransactionRecordService : ITransactionRecordService
             transaction.Subscriber.CommercialAccountName = dto.CommercialAccountName;
             transaction.Subscriber.FieldPersonName = dto.FieldPersonName;
             transaction.Subscriber.FieldElectricCompanyCompanion = dto.FieldElectricCompanyCompanion;
+            transaction.Subscriber.SubscriberNotes = dto.SubscriberNotes;
             await _subscriberRepository.UpdateAsync(transaction.Subscriber);
         }
 
@@ -288,6 +302,7 @@ public class TransactionRecordService : ITransactionRecordService
             transaction.MeterScale.IsNotRealReadingNumber = dto.IsNotRealReadingNumber;
             transaction.MeterScale.MultiplicationFactor = dto.MultiplicationFactor;
             transaction.MeterScale.MeterStatus = dto.MeterStatus;
+            transaction.MeterScale.MeterNotes = dto.MeterNotes;
             await _meterScaleRepository.UpdateAsync(transaction.MeterScale);
         }
 
@@ -318,6 +333,7 @@ public class TransactionRecordService : ITransactionRecordService
             transaction.Transformer.HasRoomButtons = dto.HasRoomButtons;
             transaction.Transformer.IsRoomSuitable = dto.IsRoomSuitable;
             transaction.Transformer.CanAddPartitions = dto.CanAddPartitions;
+            transaction.Transformer.TransformerNotes = dto.TransformerNotes;
             
             // Update Branches
             transaction.Transformer.Branches.Clear();
@@ -415,6 +431,7 @@ public class TransactionRecordService : ITransactionRecordService
             IsNotRealReadingNumber = meterScale?.IsNotRealReadingNumber ?? false,
             MultiplicationFactor = meterScale?.MultiplicationFactor ?? string.Empty,
             MeterStatus = meterScale?.MeterStatus ?? default,
+            MeterNotes = meterScale?.MeterNotes,
             AddressStatus = subscriber?.AddressStatus ?? default,
             AnyAddress = subscriber?.AnyAddress ?? default,
             NoMatchingList = violation?.NoMatchingList ?? false,
@@ -458,6 +475,8 @@ public class TransactionRecordService : ITransactionRecordService
             CommercialAccountName = subscriber?.CommercialAccountName,
             FieldPersonName = subscriber?.FieldPersonName,
             FieldElectricCompanyCompanion = subscriber?.FieldElectricCompanyCompanion,
+            SubscriberNotes = subscriber?.SubscriberNotes,
+            TransformerNotes = transformer?.TransformerNotes,
             Notes = transaction.Notes,
             CreatedAt = transaction.CreatedAt,
             UpdatedAt = transaction.UpdatedAt,

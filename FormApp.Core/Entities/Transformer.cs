@@ -15,6 +15,7 @@ public class Transformer
     public bool HasRoomButtons { get; set; }  // هل تحتوي الغرفة على أزرار
     public bool IsRoomSuitable { get; set; }  // هل الغرفة مناسبة للاستخدام
     public bool CanAddPartitions { get; set; }  // هل يمكننا إضافة فواصل للغرفة
+    public string? TransformerNotes { get; set; }  // ملاحظات المحول
     
     // Navigation properties
     public Transaction? Transaction { get; set; }

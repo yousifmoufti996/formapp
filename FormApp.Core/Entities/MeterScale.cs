@@ -17,6 +17,7 @@ public class MeterScale
     public string MultiplicationFactor { get; set; } = string.Empty;  // معامل الضرب
     public MeterStatus MeterStatus { get; set; }  // حالة العداد
     public string? ManufacturingCompany { get; set; }  // شركة التصنيع
+    public string? MeterNotes { get; set; }  // ملاحظات المقياس
     
     // Navigation property
     public Transaction? Transaction { get; set; }

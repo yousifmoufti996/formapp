@@ -36,6 +36,7 @@ public class Subscriber
     public string? CommercialAccountName { get; set; }  // الاسم التجاري المستخدم في الحساب
     public string? FieldPersonName { get; set; }  // اسم الشخص الميداني
     public string? FieldElectricCompanyCompanion { get; set; }  // مرافق شركة الكهرباء الميداني
+    public string? SubscriberNotes { get; set; }  // ملاحظات المشترك
     
     // Navigation property
     public Transaction? Transaction { get; set; }

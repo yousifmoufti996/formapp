@@ -165,6 +165,9 @@ public class AuthService : IAuthService
             throw new BadRequestException(string.Join(", ", result.Errors.Select(e => e.Description)));
         }
 
+        // Assign User role to new user
+        await _userManager.AddToRoleAsync(user, "User");
+
         // Generate tokens
         var roles = await _userManager.GetRolesAsync(user);
         var token = GenerateJwtToken(user, roles);

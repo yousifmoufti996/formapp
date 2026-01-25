@@ -24,8 +24,7 @@ public class CreateTransactionRecordDto
     public string ReadingNumber { get; set; } = string.Empty;
     public bool IsNotRealReadingNumber { get; set; }
     public string MultiplicationFactor { get; set; } = string.Empty;
-    public MeterStatus MeterStatus { get; set; }
-    
+    public MeterStatus MeterStatus { get; set; }    public string? MeterNotes { get; set; }    
     public AddressStatus AddressStatus { get; set; }
     public AnyAddress AnyAddress { get; set; }
     
@@ -73,6 +72,8 @@ public class CreateTransactionRecordDto
     public string? CommercialAccountName { get; set; }
     public string? FieldPersonName { get; set; }
     public string? FieldElectricCompanyCompanion { get; set; }
+    public string? SubscriberNotes { get; set; }
+    public string? TransformerNotes { get; set; }
     
     public string? Notes { get; set; }
 }
@@ -98,6 +99,7 @@ public class TransactionRecordResponseDto
     public bool IsNotRealReadingNumber { get; set; }
     public string MultiplicationFactor { get; set; } = string.Empty;
     public MeterStatus MeterStatus { get; set; }
+    public string? MeterNotes { get; set; }
     public AddressStatus AddressStatus { get; set; }
     public AnyAddress AnyAddress { get; set; }
     public bool NoMatchingList { get; set; }
@@ -143,6 +145,8 @@ public class TransactionRecordResponseDto
     public string? CommercialAccountName { get; set; }
     public string? FieldPersonName { get; set; }
     public string? FieldElectricCompanyCompanion { get; set; }
+    public string? SubscriberNotes { get; set; }
+    public string? TransformerNotes { get; set; }
     
     public string? Notes { get; set; }
     public DateTime CreatedAt { get; set; }

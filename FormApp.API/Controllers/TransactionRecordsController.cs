@@ -25,24 +25,24 @@ public class TransactionRecordsController : ControllerBase
     }
 
     /// <summary>
-    /// Get all facility records created by the current user
+    /// Get all facility records (SuperAdmin sees all, Users see only their own)
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var currentUserId = GetCurrentUserId();
-        var records = await _service.GetAllAsync(currentUserId);
+        var userId = User.IsInRole("SuperAdmin") ? (Guid?)null : GetCurrentUserId();
+        var records = await _service.GetAllAsync(userId);
         return Ok(records);
     }
 
     /// <summary>
-    /// Get facility record by ID (only if created by current user)
+    /// Get facility record by ID (SuperAdmin sees all, Users see only their own)
     /// </summary>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var currentUserId = GetCurrentUserId();
-        var record = await _service.GetByIdAsync(id, currentUserId);
+        var userId = User.IsInRole("SuperAdmin") ? (Guid?)null : GetCurrentUserId();
+        var record = await _service.GetByIdAsync(id, userId);
         return Ok(record);
     }
 
