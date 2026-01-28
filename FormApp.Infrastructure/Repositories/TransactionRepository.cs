@@ -68,6 +68,7 @@ public class TransactionRepository : ITransactionRepository
             .Include(t => t.Attachments)
                 .ThenInclude(a => a.CreatedBy)
             .Include(t => t.CreatedBy)
+            .OrderByDescending(t => t.CreatedAt)
             .ToListAsync();
     }
 
@@ -86,6 +87,7 @@ public class TransactionRepository : ITransactionRepository
                 .ThenInclude(a => a.CreatedBy)
             .Include(t => t.CreatedBy)
             .Where(t => t.CreatedById == userId)
+            .OrderByDescending(t => t.CreatedAt)
             .ToListAsync();
     }
 
