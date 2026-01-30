@@ -1,4 +1,5 @@
 using FormApp.API.Attributes;
+using FormApp.Application.DTOs.Common;
 using FormApp.Application.DTOs.Transactions;
 using FormApp.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -28,10 +29,13 @@ public class TransactionRecordsController : ControllerBase
     /// Get all facility records (SuperAdmin sees all, Users see only their own)
     /// </summary>
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
     {
+        var pagination = pageNumber.HasValue && pageSize.HasValue 
+            ? new PaginationRequestDto(pageNumber.Value, pageSize.Value) 
+            : null;
         var userId = User.IsInRole("SuperAdmin") ? (Guid?)null : GetCurrentUserId();
-        var records = await _service.GetAllAsync(userId);
+        var records = await _service.GetAllAsync(pagination, userId);
         return Ok(records);
     }
 

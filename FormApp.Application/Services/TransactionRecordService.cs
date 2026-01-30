@@ -1,3 +1,4 @@
+using FormApp.Application.DTOs.Common;
 using FormApp.Application.DTOs.Transactions;
 using FormApp.Application.Interfaces;
 using FormApp.Core.Entities;
@@ -34,11 +35,28 @@ public class TransactionRecordService : ITransactionRecordService
         _fileService = fileService;
     }
 
-    public async Task<IEnumerable<TransactionRecordResponseDto>> GetAllAsync(Guid? userId = null)
+    public async Task<PagedResultDto<TransactionRecordResponseDto>> GetAllAsync(PaginationRequestDto? pagination, Guid? userId = null)
     {
-        var transactions = userId.HasValue
-            ? await _transactionRepository.GetAllAsync(userId.Value)
-            : await _transactionRepository.GetAllAsync();
+        IEnumerable<Transaction> transactions;
+        int totalCount;
+
+        if (pagination == null)
+        {
+            // Return all records without pagination
+            transactions = userId.HasValue
+                ? await _transactionRepository.GetAllAsync(userId.Value)
+                : await _transactionRepository.GetAllAsync();
+            totalCount = transactions.Count();
+        }
+        else
+        {
+            // Return paginated records
+            var result = userId.HasValue
+                ? await _transactionRepository.GetPagedAsync(pagination.PageNumber, pagination.PageSize, userId.Value)
+                : await _transactionRepository.GetPagedAsync(pagination.PageNumber, pagination.PageSize);
+            transactions = result.items;
+            totalCount = result.totalCount;
+        }
             
         var responseDtos = new List<TransactionRecordResponseDto>();
         
@@ -47,7 +65,12 @@ public class TransactionRecordService : ITransactionRecordService
             responseDtos.Add(MapTransactionToResponseDto(transaction, includeSingleAttachment: true));
         }
         
-        return responseDtos;
+        return new PagedResultDto<TransactionRecordResponseDto>(
+            responseDtos,
+            totalCount,
+            pagination?.PageNumber ?? 1,
+            pagination?.PageSize ?? totalCount
+        );
     }
 
     public async Task<TransactionRecordResponseDto> GetByIdAsync(Guid id, Guid? userId = null)

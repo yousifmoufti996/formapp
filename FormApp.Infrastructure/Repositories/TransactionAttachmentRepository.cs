@@ -31,6 +31,23 @@ public class TransactionAttachmentRepository : ITransactionAttachmentRepository
             .ToListAsync();
     }
 
+    public async Task<(IEnumerable<TransactionAttachment> items, int totalCount)> GetByTransactionIdPagedAsync(Guid transactionId, int pageNumber, int pageSize)
+    {
+        var query = _context.TransactionAttachments
+            .Include(a => a.File)
+            .Include(a => a.CreatedBy)
+            .Where(a => a.TransactionId == transactionId)
+            .OrderByDescending(a => a.CreatedAt);
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalCount);
+    }
+
     public async Task<TransactionAttachment> AddAsync(TransactionAttachment attachment)
     {
         await _context.TransactionAttachments.AddAsync(attachment);

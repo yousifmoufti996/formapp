@@ -1,3 +1,4 @@
+using FormApp.Application.DTOs.Common;
 using FormApp.Application.DTOs.Transactions;
 using FormApp.Application.Interfaces;
 using FormApp.Core.Entities;
@@ -25,11 +26,29 @@ public class TransactionAttachmentService : ITransactionAttachmentService
         _transactionRepository = transactionRepository;
     }
 
-    public async Task<IEnumerable<TransactionAttachmentResponseDto>> GetByTransactionRecordAsync(Guid transactionRecordId)
+    public async Task<PagedResultDto<TransactionAttachmentResponseDto>> GetByTransactionRecordAsync(Guid transactionRecordId, PaginationRequestDto? pagination)
     {
-        var attachments = await _attachmentRepository.GetByTransactionIdAsync(transactionRecordId);
+        IEnumerable<TransactionAttachment> attachments;
+        int totalCount;
+
+        if (pagination == null)
+        {
+            // Return all attachments without pagination
+            attachments = await _attachmentRepository.GetByTransactionIdAsync(transactionRecordId);
+            totalCount = attachments.Count();
+        }
+        else
+        {
+            // Return paginated attachments
+            var result = await _attachmentRepository.GetByTransactionIdPagedAsync(
+                transactionRecordId, 
+                pagination.PageNumber, 
+                pagination.PageSize);
+            attachments = result.items;
+            totalCount = result.totalCount;
+        }
         
-        return attachments.Select(a => new TransactionAttachmentResponseDto
+        var items = attachments.Select(a => new TransactionAttachmentResponseDto
         {
             Id = a.Id,
             TransactionId = a.TransactionId,
@@ -44,6 +63,13 @@ public class TransactionAttachmentService : ITransactionAttachmentService
             UpdatedAt = a.UpdatedAt,
             CreatedByName = a.CreatedBy != null ? $"{a.CreatedBy.FirstName} {a.CreatedBy.LastName}" : string.Empty
         });
+
+        return new PagedResultDto<TransactionAttachmentResponseDto>(
+            items,
+            totalCount,
+            pagination?.PageNumber ?? 1,
+            pagination?.PageSize ?? totalCount
+        );
     }
 
     public async Task<TransactionAttachmentResponseDto> GetByIdAsync(Guid id)

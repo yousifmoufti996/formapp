@@ -1,4 +1,5 @@
 using FormApp.API.Attributes;
+using FormApp.Application.DTOs.Common;
 using FormApp.Application.DTOs.Transactions;
 using FormApp.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -28,9 +29,12 @@ public class TransactionAttachmentsController : ControllerBase
     /// Get all attachments for a transaction record
     /// </summary>
     [HttpGet("transaction/{transactionId}")]
-    public async Task<IActionResult> GetByTransactionRecord(Guid transactionId)
+    public async Task<IActionResult> GetByTransactionRecord(Guid transactionId, [FromQuery] int? pageNumber = null, [FromQuery] int? pageSize = null)
     {
-        var attachments = await _attachmentService.GetByTransactionRecordAsync(transactionId);
+        var pagination = pageNumber.HasValue && pageSize.HasValue 
+            ? new PaginationRequestDto(pageNumber.Value, pageSize.Value) 
+            : null;
+        var attachments = await _attachmentService.GetByTransactionRecordAsync(transactionId, pagination);
         return Ok(attachments);
     }
 

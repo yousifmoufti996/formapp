@@ -9,6 +9,8 @@ public interface ITransactionRepository
     Task<Transaction?> GetBySubscriberIdAsync(Guid subscriberId);
     Task<IEnumerable<Transaction>> GetAllAsync();
     Task<IEnumerable<Transaction>> GetAllAsync(Guid userId);
+    Task<(IEnumerable<Transaction> items, int totalCount)> GetPagedAsync(int pageNumber, int pageSize);
+    Task<(IEnumerable<Transaction> items, int totalCount)> GetPagedAsync(int pageNumber, int pageSize, Guid userId);
     Task<Transaction> AddAsync(Transaction transaction);
     Task<Transaction> UpdateAsync(Transaction transaction);
     Task DeleteAsync(Guid id);
