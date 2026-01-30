@@ -36,7 +36,6 @@ public class CreateTransactionRecordValidator : AbstractValidator<CreateTransact
             .MaximumLength(50).WithMessage("Reading number cannot exceed 50 characters");
 
         RuleFor(x => x.MultiplicationFactor)
-            .NotEmpty().WithMessage("Multiplication factor is required")
             .MaximumLength(20).WithMessage("Multiplication factor cannot exceed 20 characters");
 
         // Geographic location validation - if one is provided, both must be provided
